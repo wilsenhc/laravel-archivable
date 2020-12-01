@@ -28,13 +28,12 @@ jobs:
       fail-fast: true
       matrix:
         php: [7.2, 7.3, 7.4]
-        stability: [prefer-lowest, prefer-stable]
         illuminate_version: ['7.*', '8.*']
         exclude:
           - php: 7.2
             illuminate_version: '8.*'
 
-    name: PHP ${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.illuminate_version }}
+    name: PHP ${{ matrix.php }} - ${{ matrix.illuminate_version }}
 
     steps:
       - name: Checkout code
@@ -58,7 +57,7 @@ jobs:
           composer require "illuminate/pagination:${{ matrix.illuminate_version }}" --no-update
 
       - name: Install dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Execute tests
         run: vendor/bin/phpunit --verbose
