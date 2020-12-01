@@ -27,10 +27,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [7.3, 7.4]
+        php: [7.2, 7.3, 7.4]
         stability: [prefer-lowest, prefer-stable]
+        illuminate_version: [7.0, 8.0]
+        exclude:
+          - php: 7.2
+            illuminate_version: 8.0
 
-    name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
+    name: PHP ${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.illuminate_version }}
 
     steps:
       - name: Checkout code
@@ -46,6 +50,12 @@ jobs:
 
       - name: Setup Memcached
         uses: niden/actions-memcached@v7
+
+      - name: Install Illuminate specific version
+        run: |
+          composer require "illuminate/database:${{ matrix.illuminate_version }}" --no-update
+          composer require "illuminate/support:${{ matrix.illuminate_version }}" --no-update
+          composer require "illuminate/pagination:${{ matrix.illuminate_version }}" --no-update
 
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
